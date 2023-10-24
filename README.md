@@ -9,7 +9,7 @@
 - create database in mySQL named "carfinite" (please google this)
 - connect mySQL GUI to carfinite database (please google this)
 
-
+- ask administrator for environment variables (.env file). .env files should not be committed to remote repositories.
 - setting up project environment
 
 ```
