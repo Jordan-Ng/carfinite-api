@@ -1,9 +1,9 @@
 
 DROP TABLE IF EXISTS `session`;
-DROP TABLE IF EXISTS `car_image`;
 DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `car_listing`;
 DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `car_listing_image`;
 
 
 -- CREATE TABLE `users` (

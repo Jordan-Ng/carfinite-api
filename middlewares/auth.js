@@ -17,6 +17,7 @@ module.exports.authenticateToken = (req, res, next) => {
         if (err) return res.sendStatus(403)
         
         const getSession = await User.findOne({
+            attributes:{exclude: ["password"]},
             where: {username: payload.name},
             include: [{
                 model: Session,
@@ -27,7 +28,7 @@ module.exports.authenticateToken = (req, res, next) => {
         
         if (!getSession) return res.status(401).json({message: "Stale token"})
 
-        req.user = getSession
+        req.user = getSession.get({plain: true})
         next()
     })
 
