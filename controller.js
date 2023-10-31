@@ -2,6 +2,7 @@ const {User, CarListing, Session, Image, ListingImage, sequelize} = require("./m
 const {hashPassword, validatePassword, generateAccessToken} = require("./helper/auth")
 const {unlinkFiles} = require("./helper/fileHandler")
 
+
 exports.handleRegister = async (req, res) => {
   let request = req.body;
 
@@ -158,5 +159,105 @@ exports.handlePostListing = async (req, res) => {
         })
     }
     
-    return res.status(201).send({message: "Car Listing successfully posted!"})    
+    return res.status(201).send({message: "Car Listing successfully posted!"})
+}
+    
+exports.handleGetListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        where: {id: req.params.id},
+        include: [
+            {
+                model: UserLikedListing,
+                attributes: ["user_id", "listing_id"],
+                as: "listing_liked_by",                              
+                where: {                    
+                    listing_id: req.params.id
+                }
+            },
+            {
+                model: UserLikedListing,
+                as: "listing_liked",
+                where: {
+                    listing_id : req.params.id,
+                    user_id: req.user.id
+                }
+            }            
+        ]
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    let responseData = getListing.toJSON()
+    responseData.listing_liked_by = responseData.listing_liked_by.length
+    responseData.listing_liked = responseData.listing_liked.length > 0    
+    
+
+    return res.status(200).send({data: responseData})
+}
+
+
+exports.handleLikeListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        attributes : ["id"],
+        where: {id: req.params.id}
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    try {
+        await sequelize.transaction(async t => {
+            await UserLikedListing.create({
+                user_id: req.user.id,
+                listing_id: getListing.id
+            })
+        })
+    }
+    catch (err) {
+        if (err.code == "ER_DUP_ENTRY"){
+            return res.status(400).send({
+                message: "Cannot like listing more than once!"
+            })
+        }
+        return res.status(500).send({
+            message: err.message,
+            description: err.errors[0].message
+    })
+    }
+
+    return res.status(200).send({message: "Listing liked!"})
+}
+
+exports.handleUnlikeListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        attributes: ["id"],
+        where: {id: req.params.id}
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    try {
+        await sequelize.transaction(async t => {
+            await UserLikedListing.destroy({
+                where: {
+                    user_id: req.user.id,
+                    listing_id: getListing.id
+                }
+            })
+        })
+    }
+    catch (err) {
+        return res.status(500).send({
+            message: err.message,
+            description: err.errors[0].message
+        })
+    }
+
+    return res.status(200).send({message: "Unliked listing"})
+
 }

@@ -14,7 +14,7 @@ const sequelize = new Sequelize (dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, 
     }
 })
 
-const {CarListing, User, Session, Image, ListingImage} = require('./models.js')(sequelize, Sequelize)
+const {CarListing, User, Session, Image, ListingImage, UserLikedListing} = require('./models.js')(sequelize, Sequelize)
 
 const db = {
     Sequelize: Sequelize,
@@ -23,7 +23,8 @@ const db = {
     User: User,
     Session: Session,
     Image: Image,
-    ListingImage: ListingImage
+    ListingImage: ListingImage,
+    UserLikedListing: UserLikedListing
 }
 
 module.exports = db;

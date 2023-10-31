@@ -36,12 +36,16 @@ app.use(authMiddleware.authenticateToken)
 app.use("/images", express.static(__dirname + "/assets/images"))
 
 app.get('/listings', controller.handleGetAllListings)
+
 app.post("/listing/new", uploadMiddleware.upload("files") , controller.handlePostListing)
 
+app.get("/listing/:id", controller.handleGetListing)
+
+app.post("/listing/:id/like", controller.handleLikeListing)
+
+app.delete("/listing/:id/unlike", controller.handleUnlikeListing)
 
 
-
-app.get("/listings", controller.handleGetAllListings);
 
 // binding app socket to port
 app.listen(process.env.SERVER_PORT, () => {
