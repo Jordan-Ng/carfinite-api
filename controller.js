@@ -164,12 +164,17 @@ exports.handlePostListing = async (req, res) => {
     
 exports.handleGetListing = async (req, res) => {
     const getListing = await CarListing.findOne({
+        attributes: {exclude: ["user_id"]},
         where: {id: req.params.id},
         include: [
             {
+                model: User,
+                attributes: ["username", "first_name", "last_name"]
+            },
+            {
                 model: UserLikedListing,
-                attributes: ["user_id", "listing_id"],
-                as: "listing_liked_by",                              
+                attributes: ["user_id"],                
+                as: "listing_liked_by",                
                 where: {                    
                     listing_id: req.params.id
                 }
@@ -177,6 +182,7 @@ exports.handleGetListing = async (req, res) => {
             {
                 model: UserLikedListing,
                 as: "listing_liked",
+                required: false,
                 where: {
                     listing_id : req.params.id,
                     user_id: req.user.id
@@ -191,9 +197,8 @@ exports.handleGetListing = async (req, res) => {
 
     let responseData = getListing.toJSON()
     responseData.listing_liked_by = responseData.listing_liked_by.length
-    responseData.listing_liked = responseData.listing_liked.length > 0    
+    responseData.listing_liked = responseData.listing_liked ? true : false
     
-
     return res.status(200).send({data: responseData})
 }
 
