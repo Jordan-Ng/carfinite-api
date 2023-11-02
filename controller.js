@@ -164,31 +164,50 @@ exports.handlePostListing = async (req, res) => {
     
 exports.handleGetListing = async (req, res) => {
     const getListing = await CarListing.findOne({
-        attributes: {exclude: ["user_id"]},
+        // attributes: [[sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "cnt"] , {exclude: ["user_id"]}],
+        attributes: [
+            "make",
+            "model",
+            "trim",
+            "year",
+            "color",
+            "mileage",
+            "transmission",
+            "fuel_type",
+            "drivetrain",
+            "title_status",
+            "price",
+            "description",
+            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"]
+        ], 
         where: {id: req.params.id},
         include: [
             {
                 model: User,
+                as: "owner",
                 attributes: ["username", "first_name", "last_name"]
-            },
+            },            
             {
-                model: UserLikedListing,
-                attributes: ["user_id"],                
+                model: UserLikedListing,                
+                attributes: [],                
                 as: "listing_liked_by",                
                 where: {                    
                     listing_id: req.params.id
-                }
+                }                
             },
             {
                 model: UserLikedListing,
                 as: "listing_liked",
+                attributes: [],
                 required: false,
                 where: {
                     listing_id : req.params.id,
                     user_id: req.user.id
                 }
             }            
-        ]
+        ],
+        group: ["listing_liked_by.listing_id"]
     })
 
     if (!getListing){
@@ -196,8 +215,6 @@ exports.handleGetListing = async (req, res) => {
     }
 
     let responseData = getListing.toJSON()
-    responseData.listing_liked_by = responseData.listing_liked_by.length
-    responseData.listing_liked = responseData.listing_liked ? true : false
     
     return res.status(200).send({data: responseData})
 }

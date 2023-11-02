@@ -155,10 +155,18 @@ module.exports = (sequelize, Sequelize) => {
         listing_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
+            references: {
+                model: CarListing,
+                key: "id"
+            }
         },
         user_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
+            references: {
+                model: User,
+                key: "id"
+            }
         }
     }, {
         timestamps: true,
@@ -173,8 +181,9 @@ module.exports = (sequelize, Sequelize) => {
 
     CarListing.hasMany(ListingImage, {foreignKey: "car_listing_id"})
     ListingImage.belongsTo(Image, {foreignKey: "image_id", as: "image"})    
-    CarListing.belongsTo(User, {foreignKey: "user_id"})
     
+    CarListing.belongsTo(User, {foreignKey: "user_id", as: "owner"})
+
     User.hasMany(UserLikedListing, {foreignKey: "user_id"})
     CarListing.hasMany(UserLikedListing, {
         foreignKey: "listing_id",
