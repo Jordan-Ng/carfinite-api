@@ -1,6 +1,7 @@
 const express = require('express')
 const dotenv = require("dotenv")
 const authMiddleware = require("./middlewares/auth.js")
+const cors = require('cors')
 
 const app = express()
 const controller = require("./controller.js")
@@ -25,9 +26,11 @@ app.post("/login", controller.handleLogin)
 // authentication controlled endpoints
 app.use(authMiddleware.authenticateToken)
 
+app.use(cors())
+
 app.get('/listings', controller.handleGetAllListings)
 
-
+app.post('/lisitngs/newlisitng', controller.handleNewListing)
 
 
 

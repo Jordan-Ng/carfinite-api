@@ -14,12 +14,14 @@ const sequelize = new Sequelize (dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, 
     }
 })
 
-const {CarListing, User, Session} = require('./models.js')(sequelize, Sequelize)
+const {CarListing ,CarImage, Images , User, Session} = require('./models.js')(sequelize, Sequelize)
 
 const db = {
     Sequelize: Sequelize,
     sequelize: sequelize,
     CarListing : CarListing,
+    CarImage: CarImage,
+    Images: Images,
     User: User,
     Session: Session
 }
