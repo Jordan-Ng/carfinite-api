@@ -60,52 +60,50 @@ exports.handleLogin = async (req, res) => {
 }
 
 exports.handleNewListing = async (req, res) => {
-
-    upload(req, res, async err => {
-        if (err) {
-            console.log(err);
-            return res.send('somthing went wrong, file not successfully uploaded');
-        }
-    });
-
-    const request = req.body
-    const user = req.user
-
+    const getUser_id = req.user.id
     try {
-        await sequelize.transaction(async (t) => {
-            // Create a new car listing associated with the user.
-            const newCarListing = await CarListing.create({
-                make: request.make,
-                model: request.model,
-                user_id: user.id,
-                trim: request.trim,
-                year: request.year,
-                color: request.color,
-                mileage: request.mileage,
-                transmission: request.transmission,
-                fuel_type: request.fuel_type,
-                drivetrain: request.drivetrain,
-                title_status: request.title_status,
-                price: request.price,
-                description: request.description,
-            }, { transaction: t });
+        upload(req, res, async err => {
 
-            if (req.files && req.files.length > 0) {
-                // Loop through the uploaded image files and associate them with the new car listing.
+            if (err) {
+                console.log(err);
+                return res.send('somthing went wrong, file not successfully uploaded');
+            }
+
+            const request = req.body
+            await sequelize.transaction(async (t) => {
+                // Create a new car listing associated with the user.
+                const newCarListing = await CarListing.create({
+                    make: request.make,
+                    model: request.model,
+                    user_id: getUser_id,
+                    trim: request.trim,
+                    year: request.year,
+                    color: request.color,
+                    mileage: request.mileage,
+                    transmission: request.transmission,
+                    fuel_type: request.fuel_type,
+                    drivetrain: request.drivetrain,
+                    title_status: request.title_status,
+                    price: request.price,
+                    description: request.description,
+                }, { transaction: t });
+
+                
                 await Promise.all(req.files.map(async (file) => {
                     const newImage = await Images.create({
-                        filename: "" + file.filename 
+                        filename: "" + file.filename
                     }, { transaction: t });
 
-                    // Create a record in the CarImage table to associate the image with the car listing.
                     await CarImage.create({
                         car_id: newCarListing.id,
                         image_id: newImage.id,
                     }, { transaction: t });
                 }));
-            }
-        });
 
+            });
+
+        });
+        
         return res.status(200).json({ message: "New car listing created successfully" });
 
     } catch (error) {
@@ -113,7 +111,6 @@ exports.handleNewListing = async (req, res) => {
         return res.status(500).send("Something went wrong on our side!");
     }
 }
-
 
 exports.handleGetAllListings = async (req, res) => {
     const getListings = await CarListing.findAll()
