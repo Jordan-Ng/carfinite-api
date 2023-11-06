@@ -7,7 +7,7 @@ UploadMiddleware= {
     upload: (fieldname) => {
         const storage = multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, "assets/images")
+                cb(null, "uploads/images")
             },
             filename: (req, file, cb) => {
                 const fileExtension = file.mimetype.split("/")[1]

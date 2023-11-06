@@ -2,7 +2,7 @@ const express = require('express')
 const dotenv = require("dotenv")
 
 const authMiddleware = require("./middlewares/auth.js")
-const uploadMiddleware = require("./image.js")
+const uploadMiddleware = require("./middlewares/image.js")
 
 
 const app = express();
@@ -36,7 +36,7 @@ app.use(authMiddleware.authenticateToken)
 app.use("/images", express.static(__dirname + "/assets/images"))
 
 app.get('/listings', controller.handleGetAllListings)
-app.post("/listing", uploadMiddleware.upload("files") , controller.handlePostListing)
+app.post("/listing/new", uploadMiddleware.upload("files") , controller.handlePostListing)
 
 
 

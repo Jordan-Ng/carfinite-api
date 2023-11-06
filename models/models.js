@@ -151,10 +151,7 @@ module.exports = (sequelize, Sequelize) => {
     User.hasMany(Session, {foreignKey: "user_id"})
 
     CarListing.hasMany(ListingImage, {foreignKey: "car_listing_id"})
-    ListingImage.hasOne(Image, {foreignKey: "id"})
-
-
-    
+    ListingImage.belongsTo(Image, {foreignKey: "image_id", as: "image"})    
 
     return {
         CarListing: CarListing,

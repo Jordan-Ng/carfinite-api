@@ -66,13 +66,13 @@ exports.handleLogin = async (req, res) => {
 exports.handleGetAllListings = async (req, res) => {
     const getAllListings = await CarListing.findAll({        
         include: [{
-            attributes: ["image_id"],
-            model: ListingImage,
+            model: ListingImage,            
             required: true,
             include: [
-                {
-                    attributes: ["filename"],
-                    model: Image
+                {                    
+                    attributes: ["filename"],                    
+                    model: Image,
+                    as: "image"                    
                 }]
         }]
     })
@@ -102,6 +102,7 @@ exports.handleSignout = async (req, res) => {
 
 exports.handlePostListing = async (req, res) => {    
     if (req.errors) {
+        unlinkFiles(req.files)
         return res.status(400).send({message: req.errors})
     }
 
