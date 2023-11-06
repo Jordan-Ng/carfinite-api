@@ -1,9 +1,6 @@
-const { User, CarListing, Session, sequelize } = require("./models");
-const {
-  hashPassword,
-  validatePassword,
-  generateAccessToken,
-} = require("./helper/auth");
+const {User, CarListing, Session, Image, ListingImage, sequelize} = require("./models")
+const {hashPassword, validatePassword, generateAccessToken} = require("./helper/auth")
+const {unlinkFiles} = require("./helper/fileHandler")
 
 exports.handleRegister = async (req, res) => {
   let request = req.body;
@@ -67,8 +64,19 @@ exports.handleLogin = async (req, res) => {
 };
 
 exports.handleGetAllListings = async (req, res) => {
-  const getListings = await CarListing.findAll();
-  return res.status(200).send({ data: getListings });
+    const getAllListings = await CarListing.findAll({        
+        include: [{
+            model: ListingImage,            
+            required: true,
+            include: [
+                {                    
+                    attributes: ["filename"],                    
+                    model: Image,
+                    as: "image"                    
+                }]
+        }]
+    })
+    return res.status(200).send({data: getAllListings})
 };
 
 exports.handleSignout = async (req, res) => {
@@ -91,3 +99,64 @@ exports.handleSignout = async (req, res) => {
     return res.status(500).send("something went wrong on our side!");
   }
 };
+
+exports.handlePostListing = async (req, res) => {    
+    if (req.errors) {
+        unlinkFiles(req.files)
+        return res.status(400).send({message: req.errors})
+    }
+
+    const user = req.user
+    
+    const formData = {
+        make: req.body.make,
+        model:req.body.model,
+        user_id: user.id,
+        trim: req.body.trim,
+        year: req.body.year,
+        color: req.body.color,
+        mileage: req.body.mileage,
+        transmission: req.body.transmission,
+        fuel_type: req.body.fuel_type,
+        drivetrain: req.body.drivetrain,
+        title_status: req.body.title_status,
+        price: req.body.price,
+        description:req.body.description
+    }
+
+    const isValidForm = Object.values(formData).filter(value => value).length == Object.keys(formData).length
+        
+        if (!isValidForm){
+            unlinkFiles(req.files)
+            return res.status(400).send({message: "incomplete form"})
+        }
+    
+    
+    try {
+        await sequelize.transaction(async t => {
+            const carlisting = await CarListing.create(formData, {transaction: t})
+            
+            const imageFilenames = req.files.map(file => ({
+                filename: file.filename
+            }))
+            
+            const imageIds = await Image.bulkCreate(imageFilenames, {transaction: t})
+            
+            const carListing_images = imageIds.map(image => ({
+                image_id : image.id,
+                car_listing_id : carlisting.id
+            }))            
+            
+            await ListingImage.bulkCreate(carListing_images, {transaction: t})
+
+        })
+    }
+    catch (error) {
+        return res.status(500).send({
+            message: "something went wrong on our end! ",
+            description: error.message
+        })
+    }
+    
+    return res.status(201).send({message: "Car Listing successfully posted!"})    
+}

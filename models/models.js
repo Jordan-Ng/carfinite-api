@@ -111,14 +111,53 @@ module.exports = (sequelize, Sequelize) => {
         timestamps: true,
         tableName: "session"
     })
+
+    const Image = sequelize.define("image", {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        filename: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        }
+    },{
+        timestamps: true,
+        tableName: "image"
+    })
+
+    const ListingImage = sequelize.define("car_listing_image", {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        image_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        car_listing_id : {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        }
+    }, {
+        timestamps: false,
+        tableName: "car_listing_image"
+    })
     
 
     CarListing.belongsTo(User, {foreignKey: "user_id"})
     User.hasMany(Session, {foreignKey: "user_id"})
 
+    CarListing.hasMany(ListingImage, {foreignKey: "car_listing_id"})
+    ListingImage.belongsTo(Image, {foreignKey: "image_id", as: "image"})    
+
     return {
         CarListing: CarListing,
         User: User,
-        Session: Session
+        Session: Session,
+        Image: Image,
+        ListingImage : ListingImage
     }
 }
