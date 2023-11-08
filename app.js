@@ -29,7 +29,9 @@ app.post("/login", controller.handleLogin)
 app.use(authMiddleware.authenticateToken)
 app.use("/images", express.static(__dirname + "/assets/images"))
 
-app.get('/listings', controller.handleGetAllListings)
+app.get('/listings/all', controller.handleGetAllListings)
+
+app.get("/listings", controller.handleGetMyListing)
 
 app.post("/listing/new", uploadMiddleware.upload("files") , controller.handlePostListing)
 
