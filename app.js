@@ -16,12 +16,6 @@ app.get("/", (req, res) => {
   res.send({ routes: routes });
 });
 
-app.get('/', (req, res) => {
-    let routes = app._router.stack.map(r => r.route?.path)
-    routes = routes.filter(route => route && route != "/")
-    res.send({routes : routes})
-})
-
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 

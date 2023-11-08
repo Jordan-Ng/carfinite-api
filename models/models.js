@@ -137,7 +137,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false
         },
-        car_listing_id : {
+        listing_id : {
             type: Sequelize.INTEGER,
             allowNull: false
         }
@@ -179,10 +179,10 @@ module.exports = (sequelize, Sequelize) => {
 
     User.hasMany(Session, {foreignKey: "user_id"})
 
-    CarListing.hasMany(ListingImage, {foreignKey: "car_listing_id"})
+    CarListing.belongsTo(User, {foreignKey: "user_id", as: "owner"})
+    CarListing.hasMany(ListingImage, {foreignKey: "listing_id", as: "listing_images"})
     ListingImage.belongsTo(Image, {foreignKey: "image_id", as: "image"})    
     
-    CarListing.belongsTo(User, {foreignKey: "user_id", as: "owner"})
 
     User.hasMany(UserLikedListing, {foreignKey: "user_id"})
     CarListing.hasMany(UserLikedListing, {
