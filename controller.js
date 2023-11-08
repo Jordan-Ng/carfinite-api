@@ -1,6 +1,7 @@
-const {User, CarListing, Session, Image, ListingImage, sequelize} = require("./models")
+const {User, CarListing, UserLikedListing, Session, Image, ListingImage, sequelize} = require("./models")
 const {hashPassword, validatePassword, generateAccessToken} = require("./helper/auth")
 const {unlinkFiles} = require("./helper/fileHandler")
+
 
 exports.handleRegister = async (req, res) => {
   let request = req.body;
@@ -64,17 +65,60 @@ exports.handleLogin = async (req, res) => {
 };
 
 exports.handleGetAllListings = async (req, res) => {
-    const getAllListings = await CarListing.findAll({        
-        include: [{
-            model: ListingImage,            
-            required: true,
-            include: [
-                {                    
-                    attributes: ["filename"],                    
-                    model: Image,
-                    as: "image"                    
-                }]
-        }]
+    const getAllListings = await CarListing.findAll({
+        attributes: [            
+            "make",
+            "model",
+            "trim",
+            "year",
+            "color",
+            "mileage",
+            "transmission",
+            "fuel_type",
+            "drivetrain",
+            "title_status",
+            "price",
+            "description",
+            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"],            
+        ],        
+        include: [
+            {
+                model: ListingImage,
+                as: "listing_images",
+                separate: true,
+                attributes: [[sequelize.col("image.filename"), "filename"]],
+                include: [
+                    {
+                        model: Image,
+                        as: "image",
+                        attributes: [],                        
+                    }
+                ]
+            },
+            {
+                model: User,
+                as: "owner",
+                attributes: ["username", "first_name", "last_name"]
+            },
+            {
+                model: UserLikedListing,                
+                attributes: [],
+                required: false,                
+                as: "listing_liked_by",                                
+            },
+            {
+                model: UserLikedListing,
+                as: "listing_liked",
+                attributes: [],
+                required: false,
+                where: {                        
+                    user_id: req.user.id
+                }
+            }   
+        ],
+        group: ["id"]
+        // group: ["listing_liked.listing_id"]
     })
     return res.status(200).send({data: getAllListings})
 };
@@ -144,7 +188,7 @@ exports.handlePostListing = async (req, res) => {
             
             const carListing_images = imageIds.map(image => ({
                 image_id : image.id,
-                car_listing_id : carlisting.id
+                listing_id : carlisting.id
             }))            
             
             await ListingImage.bulkCreate(carListing_images, {transaction: t})
@@ -158,5 +202,139 @@ exports.handlePostListing = async (req, res) => {
         })
     }
     
-    return res.status(201).send({message: "Car Listing successfully posted!"})    
+    return res.status(201).send({message: "Car Listing successfully posted!"})
+}
+    
+exports.handleGetListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        attributes: [
+            "make",
+            "model",
+            "trim",
+            "year",
+            "color",
+            "mileage",
+            "transmission",
+            "fuel_type",
+            "drivetrain",
+            "title_status",
+            "price",
+            "description",
+            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"]
+        ], 
+        where: {id: req.params.id},
+        include: [
+            {
+                model: ListingImage,
+                as: "listing_images",
+                separate: true,
+                attributes: [[sequelize.col("image.filename"), "filename"]],
+                include: [
+                    {
+                        model: Image,
+                        as: "image",
+                        attributes: []
+                    }
+                ]
+            },
+            {
+                model: User,
+                as: "owner",
+                attributes: ["username", "first_name", "last_name"]
+            },            
+            {
+                model: UserLikedListing,                
+                attributes: [],                
+                as: "listing_liked_by",                
+                where: {                    
+                    listing_id: req.params.id
+                }                
+            },
+            {
+                model: UserLikedListing,
+                as: "listing_liked",
+                attributes: [],
+                required: false,
+                where: {
+                    listing_id : req.params.id,
+                    user_id: req.user.id
+                }
+            }            
+        ],
+        group: ["listing_liked_by.listing_id"]
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    let responseData = getListing.toJSON()
+    
+    return res.status(200).send({data: responseData})
+}
+
+
+exports.handleLikeListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        attributes : ["id"],
+        where: {id: req.params.id}
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    try {
+        await sequelize.transaction(async t => {
+            await UserLikedListing.create({
+                user_id: req.user.id,
+                listing_id: getListing.id
+            })
+        })
+    }
+    catch (err) {
+        
+        if (err.errors[0].type == "unique violation"){
+            return res.status(400).send({
+                message: "Cannot like listing more than once!"
+            })
+        }
+        return res.status(500).send({
+            message: err.message
+    })
+    }
+
+    return res.status(200).send({message: "Listing liked!"})
+}
+
+exports.handleUnlikeListing = async (req, res) => {
+    const getListing = await CarListing.findOne({
+        attributes: ["id"],
+        where: {id: req.params.id}
+    })
+
+    if (!getListing){
+        return res.status(404).send({message: "listing not found"})
+    }
+
+    try {
+        await sequelize.transaction(async t => {
+            await UserLikedListing.destroy({
+                where: {
+                    user_id: req.user.id,
+                    listing_id: getListing.id
+                }
+            })
+        })
+    }
+    catch (err) {
+        return res.status(500).send({
+            message: err.message,
+            description: err.errors[0].message
+        })
+    }
+
+    return res.status(200).send({message: "Unliked listing"})
+
 }

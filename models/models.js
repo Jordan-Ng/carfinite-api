@@ -137,7 +137,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false
         },
-        car_listing_id : {
+        listing_id : {
             type: Sequelize.INTEGER,
             allowNull: false
         }
@@ -146,18 +146,63 @@ module.exports = (sequelize, Sequelize) => {
         tableName: "car_listing_image"
     })
     
+    const UserLikedListing = sequelize.define("user_liked_listing", {
+        id: {
+            type: Sequelize.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        listing_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+                model: CarListing,
+                key: "id"
+            }
+        },
+        user_id: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+                model: User,
+                key: "id"
+            }
+        }
+    }, {
+        timestamps: true,
+        tableName: "user_liked_listing",
+        indexes: [{
+            unique: true,
+            fields: ["listing_id", "user_id"]
+        }]
+    })
 
-    CarListing.belongsTo(User, {foreignKey: "user_id"})
     User.hasMany(Session, {foreignKey: "user_id"})
 
-    CarListing.hasMany(ListingImage, {foreignKey: "car_listing_id"})
+    CarListing.belongsTo(User, {foreignKey: "user_id", as: "owner"})
+    CarListing.hasMany(ListingImage, {foreignKey: "listing_id", as: "listing_images"})
     ListingImage.belongsTo(Image, {foreignKey: "image_id", as: "image"})    
+    
+
+    User.hasMany(UserLikedListing, {foreignKey: "user_id"})
+    CarListing.hasMany(UserLikedListing, {
+        foreignKey: "listing_id",
+        as: "listing_liked_by"
+    })
+    CarListing.hasOne(UserLikedListing, {
+        foreignKey: "listing_id",
+        as: "listing_liked"
+    })
+    UserLikedListing.belongsTo(CarListing, {foreignKey: "listing_id"})
+
+
 
     return {
         CarListing: CarListing,
         User: User,
         Session: Session,
         Image: Image,
-        ListingImage : ListingImage
+        ListingImage : ListingImage,
+        UserLikedListing: UserLikedListing
     }
 }
