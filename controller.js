@@ -274,6 +274,61 @@ exports.handleGetListing = async (req, res) => {
     return res.status(200).send({data: responseData})
 }
 
+exports.handleGetMyListing = async(req, res) => {
+    const userListings = await CarListing.findAll({
+        attributes: [
+            "make",
+            "model",
+            "trim",
+            "year",
+            "color",
+            "mileage",
+            "transmission",
+            "fuel_type",
+            "drivetrain",
+            "title_status",
+            "price",
+            "description",
+            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"],            
+        ],
+        where: {
+            user_id: req.user.id
+        },
+        include: [
+            {
+                model: ListingImage,
+                as: "listing_images",
+                separate: true,
+                attributes: [[sequelize.col("image.filename"), "filename"]],
+                include: [
+                    {
+                        model: Image,
+                        as: "image",
+                        attributes: [],                        
+                    }
+                ]
+            },
+            {
+                model: UserLikedListing,                
+                attributes: [],
+                required: false,                
+                as: "listing_liked_by",                                
+            },
+            {
+                model: UserLikedListing,
+                as: "listing_liked",
+                attributes: [],
+                required: false,
+                where: {                        
+                    user_id: req.user.id
+                }
+            }   
+        ],
+        group: ["id"]
+    })
+    return res.status(200).send({data: userListings})
+}
 
 exports.handleLikeListing = async (req, res) => {
     const getListing = await CarListing.findOne({
