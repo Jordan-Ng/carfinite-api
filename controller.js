@@ -79,7 +79,7 @@ exports.handleGetAllListings = async (req, res) => {
             "title_status",
             "price",
             "description",
-            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            // [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
             [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"],            
         ],        
         include: [
@@ -103,7 +103,8 @@ exports.handleGetAllListings = async (req, res) => {
             },
             {
                 model: UserLikedListing,                
-                attributes: [],
+                attributes: ["user_id"],
+                separate: true,
                 required: false,                
                 as: "listing_liked_by",                                
             },
@@ -120,7 +121,32 @@ exports.handleGetAllListings = async (req, res) => {
         group: ["id"]
         // group: ["listing_liked.listing_id"]
     })
-    return res.status(200).send({data: getAllListings})
+
+    const formattedResponse = getAllListings.map(listing => {
+        return {
+            make: listing.make,
+            model: listing.model,
+            owner_first_name: listing.owner.first_name,
+            owner_last_name : listing.owner.last_name,
+            specifications: {
+                trim: listing.trim,
+                year: listing.year,
+                color: listing.color,
+                mileage: listing.mileage,
+                transmission: listing.transmission,
+                fuel_type: listing.fuel_type,
+                drivetrain: listing.drivetrain,
+                title_status: listing.title_status
+            },
+            price: listing.price,
+            description: listing.description,
+            images: listing.dataValues.listing_images.map(file => (file.dataValues.filename)),
+            liked: Boolean(listing.dataValues.liked),
+            liked_count: listing.dataValues.listing_liked_by.length
+        }
+    })
+    // return res.status(200).send({data: getAllListings})
+    return res.status(200).send({data: formattedResponse})
 };
 
 exports.handleSignout = async (req, res) => {
@@ -220,15 +246,15 @@ exports.handleGetListing = async (req, res) => {
             "title_status",
             "price",
             "description",
-            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
-            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"]
+            // [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"],            
         ], 
         where: {id: req.params.id},
         include: [
             {
                 model: ListingImage,
                 as: "listing_images",
-                separate: true,
+                separate: true,                
                 attributes: [[sequelize.col("image.filename"), "filename"]],
                 include: [
                     {
@@ -244,9 +270,11 @@ exports.handleGetListing = async (req, res) => {
                 attributes: ["username", "first_name", "last_name"]
             },            
             {
-                model: UserLikedListing,                
-                attributes: [],                
-                as: "listing_liked_by",                
+                model: UserLikedListing,                                                                    
+                attributes:["user_id"],                              
+                as: "listing_liked_by",
+                required: false,
+                separate: true,                
                 where: {                    
                     listing_id: req.params.id
                 }                
@@ -255,14 +283,14 @@ exports.handleGetListing = async (req, res) => {
                 model: UserLikedListing,
                 as: "listing_liked",
                 attributes: [],
-                required: false,
+                required: false,                                
                 where: {
                     listing_id : req.params.id,
                     user_id: req.user.id
                 }
             }            
-        ],
-        group: ["listing_liked_by.listing_id"]
+        ],                
+        group: ["listing_liked.listing_id"]
     })
 
     if (!getListing){
@@ -271,7 +299,29 @@ exports.handleGetListing = async (req, res) => {
 
     let responseData = getListing.toJSON()
     
-    return res.status(200).send({data: responseData})
+    const formattedResponse = {
+            make: responseData.make,
+            model: responseData.model,
+            owner_first_name: responseData.owner.first_name,
+            owner_last_name : responseData.owner.last_name,
+            specifications: {
+                trim: responseData.trim,
+                year: responseData.year,
+                color: responseData.color,
+                mileage: responseData.mileage,
+                transmission: responseData.transmission,
+                fuel_type: responseData.fuel_type,
+                drivetrain: responseData.drivetrain,
+                title_status: responseData.title_status
+            },
+            price: responseData.price,
+            description: responseData.description,
+            images: responseData.listing_images.map(file => (file.filename)),
+            liked: Boolean(responseData.liked),
+            liked_count: responseData.listing_liked_by.length
+    }
+    
+    return res.status(200).send({data: formattedResponse})
 }
 
 exports.handleGetMyListing = async(req, res) => {

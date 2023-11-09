@@ -27,7 +27,7 @@ app.post("/login", controller.handleLogin)
 
 // authentication controlled endpoints
 app.use(authMiddleware.authenticateToken)
-app.use("/images", express.static(__dirname + "/assets/images"))
+app.use("/images", express.static(__dirname + "/uploads/images"))
 
 app.get('/listings/all', controller.handleGetAllListings)
 
