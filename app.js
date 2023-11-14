@@ -10,6 +10,13 @@ const controller = require("./controller.js");
 
 dotenv.config();
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")  
+  next()
+})
+
 app.get("/", (req, res) => {
   let routes = app._router.stack.map((r) => r.route?.path);
   routes = routes.filter((route) => route && route != "/");
