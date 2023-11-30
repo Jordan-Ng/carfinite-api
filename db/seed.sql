@@ -79,3 +79,283 @@ VALUES ("Subaru", "WRX", (SELECT id FROM users WHERE username="BW"), "STI", 2017
 INSERT INTO car_listing 
 (make, model, user_id, trim, year, color, mileage, transmission, fuel_type, drivetrain, title_status, price, description)
 VALUES ("Volkswagen", "Jetta", (SELECT id FROM users WHERE username="BW"), "SEL", 2019, "White", 28000, "Automatic", "Gasoline", "Front wheel drive", "Salvage title", 16000, "Salvage title because car got rear-ended but repaired with like new results. Engine and transmission still runs like new, routinely serviced at Volkswagen and still has active warranty.");
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171243.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171430.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171490.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Kevin Nguyen's Honda Accord*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171495.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171500.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171501.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171502.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171600.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171601.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171602.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171700.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171701.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171702.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Michael Wu's Kia Optima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171800.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Michael Wu's Kia Optima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171801.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Michael Wu's Kia Optima*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171802.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171900.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171901.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171902.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171910.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171911.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171912.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171920.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171921.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171922.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171930.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171931.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO image
+(filename, createdAt, updatedAt)
+VALUES ("1700171932.png", "2023-11-20 15:30:10", "2023-11-20 15:30:10");
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171243.png"), (SELECT id FROM car_listing WHERE model="Corolla" AND mileage=25000));
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171430.png"), (SELECT id FROM car_listing WHERE model="Corolla" AND mileage=25000));
+
+/*belongs to Angel Tran's Toyota Corolla*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171490.png"), (SELECT id FROM car_listing WHERE model="Corolla" AND mileage=25000));
+
+/*belongs to Kevin Nguyen's Honda Accord*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171495.png"), (SELECT id FROM car_listing WHERE model="Accord" AND mileage=35000));
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171500.png"), (SELECT id FROM car_listing WHERE model="Focus" AND mileage=42000));
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171501.png"), (SELECT id FROM car_listing WHERE model="Focus" AND mileage=42000));
+
+/*belongs to John Doe's Ford Focus*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171502.png"), (SELECT id FROM car_listing WHERE model="Focus" AND mileage=42000));
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171600.png"), (SELECT id FROM car_listing WHERE model="Cruze" AND mileage=38000));
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171601.png"), (SELECT id FROM car_listing WHERE model="Cruze" AND mileage=38000));
+
+/*belongs to Jeffrey Banning's Chevrolet Cruze*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171602.png"), (SELECT id FROM car_listing WHERE model="Cruze" AND mileage=38000));
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171700.png"), (SELECT id FROM car_listing WHERE model="Altima" AND mileage=30000));
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171701.png"), (SELECT id FROM car_listing WHERE model="Altima" AND mileage=30000));
+
+/*belongs to Fellicia Tian's Nissan Altima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171702.png"), (SELECT id FROM car_listing WHERE model="Altima" AND mileage=30000));
+
+/*belongs to Micahel Wu's Kia Optima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171800.png"), (SELECT id FROM car_listing WHERE model="Optima" AND mileage=28000));
+
+/*belongs to Micahel Wu's Kia Optima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171801.png"), (SELECT id FROM car_listing WHERE model="Optima" AND mileage=28000));
+
+/*belongs to Micahel Wu's Kia Optima*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171802.png"), (SELECT id FROM car_listing WHERE model="Optima" AND mileage=28000));
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171900.png"), (SELECT id FROM car_listing WHERE model="Elantra" AND mileage=33000));
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171901.png"), (SELECT id FROM car_listing WHERE model="Elantra" AND mileage=33000));
+
+/*belongs to Robby Gusman's Hyundai Elantra*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171902.png"), (SELECT id FROM car_listing WHERE model="Elantra" AND mileage=33000));
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171910.png"), (SELECT id FROM car_listing WHERE model="3 Hatchback" AND mileage=25000));
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171911.png"), (SELECT id FROM car_listing WHERE model="3 Hatchback" AND mileage=25000));
+
+/*belongs to John Doe's Mazda 3 Hatchback*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171912.png"), (SELECT id FROM car_listing WHERE model="3 Hatchback" AND mileage=25000));
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171920.png"), (SELECT id FROM car_listing WHERE model="WRX" AND mileage=32000));
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171921.png"), (SELECT id FROM car_listing WHERE model="WRX" AND mileage=32000));
+
+/*belongs to Bryan Walker's Subaru WRX*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171922.png"), (SELECT id FROM car_listing WHERE model="WRX" AND mileage=32000));
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171930.png"), (SELECT id FROM car_listing WHERE model="Jetta" AND mileage=28000));
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171931.png"), (SELECT id FROM car_listing WHERE model="Jetta" AND mileage=28000));
+
+/*belongs to Bryan Walker's Volkswagen Jetta*/
+INSERT INTO car_listing_image
+(image_id, listing_id)
+VALUES ((SELECT id FROM image WHERE filename="1700171932.png"), (SELECT id FROM car_listing WHERE model="Jetta" AND mileage=28000));
