@@ -10,6 +10,24 @@ const controller = require("./controller.js");
 
 dotenv.config();
 
+app.use((req, res, next) => {
+  // add CLIENT_URL=http://localhost:3000 to your .env file
+  res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE')
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")  
+  res.setHeader("Access-Control-Allow-Credentials", true)  
+  
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next()
+})
+
+app.options('/*', (_, res) => {
+  res.status(200);
+});
+
 app.get("/", (req, res) => {
   let routes = app._router.stack.map((r) => r.route?.path);
   routes = routes.filter((route) => route && route != "/");
@@ -25,9 +43,10 @@ app.post('/register', controller.handleRegister)
 
 app.post("/login", controller.handleLogin)
 
+
 // authentication controlled endpoints
-app.use(authMiddleware.authenticateToken)
 app.use("/images", express.static(__dirname + "/uploads/images"))
+app.use(authMiddleware.authenticateToken)
 
 app.get('/listings/all', controller.handleGetAllListings)
 
@@ -40,6 +59,8 @@ app.get("/listing/:id", controller.handleGetListing)
 app.post("/listing/:id/like", controller.handleLikeListing)
 
 app.delete("/listing/:id/unlike", controller.handleUnlikeListing)
+
+app.get("/authenticate", controller.handleAuthenticate)
 
 
 

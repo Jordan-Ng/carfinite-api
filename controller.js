@@ -66,7 +66,8 @@ exports.handleLogin = async (req, res) => {
 
 exports.handleGetAllListings = async (req, res) => {
     const getAllListings = await CarListing.findAll({
-        attributes: [            
+        attributes: [
+            "id",            
             "make",
             "model",
             "trim",
@@ -124,6 +125,7 @@ exports.handleGetAllListings = async (req, res) => {
 
     const formattedResponse = getAllListings.map(listing => {
         return {
+            id: listing.id,
             make: listing.make,
             model: listing.model,
             owner_first_name: listing.owner.first_name,
@@ -188,12 +190,12 @@ exports.handlePostListing = async (req, res) => {
         mileage: req.body.mileage,
         transmission: req.body.transmission,
         fuel_type: req.body.fuel_type,
-        drivetrain: req.body.drivetrain,
+        drivetrain: req.body.drive_train,
         title_status: req.body.title_status,
         price: req.body.price,
         description:req.body.description
     }
-
+    
     const isValidForm = Object.values(formData).filter(value => value).length == Object.keys(formData).length
         
         if (!isValidForm){
@@ -201,7 +203,7 @@ exports.handlePostListing = async (req, res) => {
             return res.status(400).send({message: "incomplete form"})
         }
     
-    
+        formData["user_id"] = user.id
     try {
         await sequelize.transaction(async t => {
             const carlisting = await CarListing.create(formData, {transaction: t})
@@ -327,6 +329,7 @@ exports.handleGetListing = async (req, res) => {
 exports.handleGetMyListing = async(req, res) => {
     const userListings = await CarListing.findAll({
         attributes: [
+            "id",
             "make",
             "model",
             "trim",
@@ -339,7 +342,7 @@ exports.handleGetMyListing = async(req, res) => {
             "title_status",
             "price",
             "description",
-            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "like_count"],
+            [sequelize.fn('count', sequelize.col("listing_liked_by.listing_id")), "liked_count"],
             [sequelize.fn('count', sequelize.col("listing_liked.listing_id")), "liked"],            
         ],
         where: {
@@ -377,7 +380,33 @@ exports.handleGetMyListing = async(req, res) => {
         ],
         group: ["id"]
     })
-    return res.status(200).send({data: userListings})
+
+    const formattedResponse = userListings.map(listing => {
+        return {
+            id: listing.id,
+            make: listing.make,
+            model: listing.model,
+            owner_first_name: req.user.first_name,
+            owner_last_name : req.user.last_name,
+            specifications: {
+                trim: listing.trim,
+                year: listing.year,
+                color: listing.color,
+                mileage: listing.mileage,
+                transmission: listing.transmission,
+                fuel_type: listing.fuel_type,
+                drivetrain: listing.drivetrain,
+                title_status: listing.title_status
+            },
+            price: listing.price,
+            description: listing.description,
+            images: listing.dataValues.listing_images.map(file => (file.dataValues.filename)),
+            liked: Boolean(listing.dataValues.liked),
+            liked_count: listing.dataValues.liked_count
+        }
+    })
+    return res.status(200).send({data: formattedResponse})
+    // return res.status(200).send({data: userListings})
 }
 
 exports.handleLikeListing = async (req, res) => {
@@ -420,6 +449,7 @@ exports.handleUnlikeListing = async (req, res) => {
     })
 
     if (!getListing){
+        console.log("cannot find listing")
         return res.status(404).send({message: "listing not found"})
     }
 
@@ -442,4 +472,8 @@ exports.handleUnlikeListing = async (req, res) => {
 
     return res.status(200).send({message: "Unliked listing"})
 
+}
+
+exports.handleAuthenticate = async (req, res) => {
+    return res.status(200).json({user: req.user.username})
 }
